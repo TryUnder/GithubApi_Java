@@ -1,9 +1,10 @@
 package com.example.github_api.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Data;
+
 import java.util.List;
 
 @Data
@@ -40,7 +41,6 @@ public class GitHubRepository {
     }
 
     private List<Branch> branches;
-
     public String getName() { return name; }
     public boolean isFork() { return fork; }
     public void setFork(boolean fork) { this.fork = fork; }
