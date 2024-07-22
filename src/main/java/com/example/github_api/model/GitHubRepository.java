@@ -41,7 +41,6 @@ public class GitHubRepository {
     }
 
     private List<Branch> branches;
-
     public String getName() { return name; }
     public boolean isFork() { return fork; }
     public void setFork(boolean fork) { this.fork = fork; }
