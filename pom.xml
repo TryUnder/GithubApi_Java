@@ -79,10 +79,11 @@
 					<includes>
 						<include>**/*Tests.java</include>
 					</includes>
+					<reportFormat>plain</reportFormat>
 					<properties>
 						<property>
-							<name>groups</name>
-							<value>BasicTest</value>
+							<name>printSummary</name>
+							<value>true</value>
 						</property>
 					</properties>
 				</configuration>
