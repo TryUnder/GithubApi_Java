@@ -21,7 +21,7 @@ public class GitHubService {
         return List.of();
     }
 
-    public List<GitHubRepository.Branch> getRepositoryBranches(@PathVariable String username, @PathVariable String repository) {
+    public List<GitHubRepository.Branch> getBranches(@PathVariable String username, @PathVariable String repository) {
         try {
             return List.of();
         } catch (UserNotFoundException e) {
