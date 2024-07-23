@@ -78,6 +78,7 @@
 				<configuration>
 					<includes>
 						<include>**/*Tests.java</include>
+						<include>**/*Test.java</include>
 					</includes>
 					<reportFormat>plain</reportFormat>
 					<properties>
