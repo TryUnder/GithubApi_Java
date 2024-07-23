@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -18,5 +19,13 @@ public class GitHubService {
 
     public List<GitHubRepository> getRepositories(String username) {
         return List.of();
+    }
+
+    public List<GitHubRepository.Branch> getRepositoryBranches(@PathVariable String username, @PathVariable String repository) {
+        try {
+            return List.of();
+        } catch (UserNotFoundException e) {
+            return List.of();
+        }
     }
 }
