@@ -10,7 +10,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -34,11 +33,20 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-
 
+      - name: Check Java version
+        run: java -version
+
+      - name: Check Maven version
+        run: mvn -v
+
       - name: Set up environment variables
         run: echo "API_TOKEN_GTH=${{ secrets.API_TOKEN_GTH }}" >> $GITHUB_ENV
 
       - name: Install dependencies
         run: mvn install --no-transfer-progress --quiet
 
+      - name: Print environment variables
+        run: env
+
       - name: Run tests
-        run: mvn test
+        run: mvn test -X
