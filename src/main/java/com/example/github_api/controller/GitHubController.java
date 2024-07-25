@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
@@ -23,25 +24,19 @@ import java.util.stream.Collectors;
 @RequestMapping("api/github")
 @RequiredArgsConstructor
 public class GitHubController {
+
+    @Autowired
     private final GitHubService gitHubService;
 
     @GetMapping("/users/{username}/repositories")
-    public ResponseEntity<?> getUserRepositories(@PathVariable String username) {
-        try {
-            List<GitHubRepository> repositories = gitHubService.getRepositories(username);
-            return ResponseEntity.ok(repositories);
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new GlobalExceptionHandler());
-        }
+    public ResponseEntity<List<GitHubRepository>> getUserRepositories(@PathVariable String username) {
+        List<GitHubRepository> repositories = gitHubService.getRepositories(username);
+        return ResponseEntity.ok(repositories);
     }
 
     @GetMapping("/users/{username}/repositories/{repository}/branches")
-    public ResponseEntity<?> getRepositoryBranches(@PathVariable String username, @PathVariable String repository) {
-        try {
-            List<GitHubRepository.Branch> branches = gitHubService.getBranches(username, repository);
-            return ResponseEntity.ok(branches);
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new GlobalExceptionHandler());
-        }
+    public ResponseEntity<List<GitHubRepository.Branch>> getRepositoryBranches(@PathVariable String username, @PathVariable String repository) {
+        List<GitHubRepository.Branch> branches = gitHubService.getBranches(username, repository);
+        return ResponseEntity.ok(branches);
     }
 }
