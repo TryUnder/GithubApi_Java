@@ -43,10 +43,13 @@ jobs:
         run: echo "API_TOKEN_GTH=${{ secrets.API_TOKEN_GTH }}" >> $GITHUB_ENV
 
       - name: Install dependencies
-        run: mvn install --no-transfer-progress --quiet
+        run: mvn clean install --no-transfer-progress --quiet
 
       - name: Print environment variables
         run: env
 
-      - name: Run tests
+      - name: Print test reports
+        run: ls -R target/surefire-reports
+
+      - name: Run tests with debug logging
         run: mvn test -X
