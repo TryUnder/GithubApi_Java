@@ -39,8 +39,10 @@ jobs:
       - name: Check Maven version
         run: mvn -v
 
-      - name: Print application properties
-        run: cat src/main/resources/application.properties
+      - name: Set up environment variables
+        run: |
+          echo "github.api.token=${{ secrets.API_TOKEN_GTH }}" >> $GITHUB_ENV
+          echo "github.api.url=https://api.github.com" >> $GITHUB_ENV
 
       - name: Install dependencies
         run: mvn clean install --no-transfer-progress --quiet
