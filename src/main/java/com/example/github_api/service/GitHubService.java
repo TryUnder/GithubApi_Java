@@ -17,15 +17,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class GitHubService {
     private static Logger logger = LoggerFactory.getLogger(GitHubService.class);
     private final RestTemplate restTemplate;
 
-    @Value("${github.api.url")
+    public GitHubService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+
+    @Value("${github.api.url}")
     private String gitHubApiUrl;
 
-    @Value("${github.api.token")
+    @Value("${github.api.token}")
     private String gitHubApiToken;
 
     private HttpHeaders createHeaders() {
@@ -72,10 +75,10 @@ public class GitHubService {
     public List<GitHubRepository.Branch> getBranches(@PathVariable String username, @PathVariable String repository) {
         String url = String.format("%s/repos/%s/%s/branches", gitHubApiUrl, username, repository);
         logger.info("Fetching branches for repository {}/{}", username, repository);
-        HttpEntity<String> entity = new HttpEntity<String>(createHeaders());
+        HttpEntity<String> entity = new HttpEntity<>(createHeaders());
         ResponseEntity<GitHubRepository.Branch[]> response = restTemplate.exchange(url, HttpMethod.GET, entity, GitHubRepository.Branch[].class);
-        GitHubRepository.Branch[] branches = restTemplate.getForObject(url, GitHubRepository.Branch[].class);
 
+        GitHubRepository.Branch[] branches = response.getBody();
         return branches != null ? Arrays.asList(branches) : List.of();
     }
 }
