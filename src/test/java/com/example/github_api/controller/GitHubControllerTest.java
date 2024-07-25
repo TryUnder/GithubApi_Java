@@ -1,7 +1,6 @@
 package com.example.github_api.controller;
 
 import com.example.github_api.exception.UserNotFoundException;
-import com.example.github_api.controller.GitHubController;
 import com.example.github_api.model.GitHubRepository;
 import com.example.github_api.service.GitHubService;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,10 +8,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+
 import java.util.Collections;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -21,29 +23,30 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@WebMvcTest(GitHubController.class)
 public class GitHubControllerTest {
-
-    @InjectMocks
-    private GitHubController gitHubController;
 
     @MockBean
     private GitHubService gitHubService;
 
+    @InjectMocks
+    private GitHubController gitHubController;
+
     private MockMvc mockMvc;
 
     @BeforeEach
-    void setUp() {
+    void setUp(WebApplicationContext webApplicationContext) {
         MockitoAnnotations.openMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(gitHubController).build();
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
     @Test
     void testGetUserRepositories_UserNotFound() throws Exception {
         String username = "nonExistentUser";
-        when(gitHubService.getRepositories(anyString())).thenThrow(new UserNotFoundException(String.format("%s", username)));
+        when(gitHubService.getRepositories(anyString())).thenThrow(new UserNotFoundException(username));
 
-        mockMvc.perform(get("api/github/users/nonExistentUser/repositories")
-                .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/github/users/{username}/repositories", username)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404))
                 .andExpect(jsonPath("$.message").value(String.format("User %s not found", username)));
@@ -61,8 +64,8 @@ public class GitHubControllerTest {
 
         when(gitHubService.getRepositories(anyString())).thenReturn(Collections.singletonList(gitHubRepository));
 
-        mockMvc.perform(get(String.format("/api/github/users/%s/repositories", username))
-                    .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/github/users/{username}/repositories", username)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].name").value("test-repo"))

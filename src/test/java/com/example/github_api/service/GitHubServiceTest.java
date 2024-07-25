@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,7 +24,7 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 public class GitHubServiceTest {
 
-    @InjectMocks
+    @Autowired
     private GitHubService gitHubService;
 
     @MockBean
@@ -52,7 +53,7 @@ public class GitHubServiceTest {
     }
 
     @Test
-    void testGetRepositories_Succes_WithToken() {
+    void testGetRepositories_Success_WithToken() {
         String username = "existentUser";
         String url = String.format("%s/users/%s/repos", gitHubApiUrl, username);
 
@@ -61,17 +62,35 @@ public class GitHubServiceTest {
         gitHubRepositories[0].setName("test-repo");
         gitHubRepositories[0].setFork(false);
 
+        ResponseEntity<GitHubRepository[]> repoResponseEntity = new ResponseEntity<>(gitHubRepositories, HttpStatus.OK);
+
         when(restTemplate.exchange(eq(url), eq(HttpMethod.GET), any(HttpEntity.class), eq(GitHubRepository[].class)))
-                .thenReturn(new ResponseEntity<>(gitHubRepositories, HttpStatus.OK));
+                .thenReturn(repoResponseEntity);
+
+        String branchUrl = String.format("%s/repos/%s/%s/branches", gitHubApiUrl, username, "test-repo");
+        GitHubRepository.Branch[] branches = new GitHubRepository.Branch[1];
+        branches[0] = new GitHubRepository.Branch();
+        branches[0].setName("main");
+        branches[0].setCommit(new GitHubRepository.Branch.Commit());
+        branches[0].getCommit().setSha("123456");
+
+        ResponseEntity<GitHubRepository.Branch[]> branchResponseEntity = new ResponseEntity<>(branches, HttpStatus.OK);
+
+        when(restTemplate.exchange(eq(branchUrl), eq(HttpMethod.GET), any(HttpEntity.class), eq(GitHubRepository.Branch[].class)))
+                .thenReturn(branchResponseEntity);
 
         List<GitHubRepository> result = gitHubService.getRepositories(username);
 
         assertEquals(1, result.size());
         assertEquals("test-repo", result.get(0).getName());
+        assertEquals(1, result.get(0).getBranches().size());
+        assertEquals("main", result.get(0).getBranches().get(0).getName());
+        assertEquals("123456", result.get(0).getBranches().get(0).getCommit().getSha());
     }
 
+
     @Test
-    void testGetRepositories_Succes_WithoutToken() {
+    void testGetRepositories_Success_WithoutToken() {
         gitHubApiToken = "";
 
         String username = "existentUser";
@@ -82,14 +101,33 @@ public class GitHubServiceTest {
         repos[0].setName("test-repo");
         repos[0].setFork(false);
 
+        ResponseEntity<GitHubRepository[]> repoResponseEntity = new ResponseEntity<>(repos, HttpStatus.OK);
+
         when(restTemplate.exchange(eq(url), eq(HttpMethod.GET), any(HttpEntity.class), eq(GitHubRepository[].class)))
-                .thenReturn(new ResponseEntity<>(repos, HttpStatus.OK));
+                .thenReturn(repoResponseEntity);
+
+        String branchUrl = String.format("%s/repos/%s/%s/branches", gitHubApiUrl, username, "test-repo");
+        GitHubRepository.Branch[] branches = new GitHubRepository.Branch[1];
+        branches[0] = new GitHubRepository.Branch();
+        branches[0].setName("main");
+        branches[0].setCommit(new GitHubRepository.Branch.Commit());
+        branches[0].getCommit().setSha("123456");
+
+        ResponseEntity<GitHubRepository.Branch[]> branchResponseEntity = new ResponseEntity<>(branches, HttpStatus.OK);
+
+        when(restTemplate.exchange(eq(branchUrl), eq(HttpMethod.GET), any(HttpEntity.class), eq(GitHubRepository.Branch[].class)))
+                .thenReturn(branchResponseEntity);
 
         List<GitHubRepository> result = gitHubService.getRepositories(username);
 
         assertEquals(1, result.size());
         assertEquals("test-repo", result.get(0).getName());
+        assertEquals(1, result.get(0).getBranches().size());
+        assertEquals("main", result.get(0).getBranches().get(0).getName());
+        assertEquals("123456", result.get(0).getBranches().get(0).getCommit().getSha());
     }
+
+
 
     @Test
     void testGetBranches_Success_WithToken() {
