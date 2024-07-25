@@ -39,14 +39,11 @@ jobs:
       - name: Check Maven version
         run: mvn -v
 
-      - name: Set up environment variables
-        run: echo "API_TOKEN_GTH=${{ secrets.API_TOKEN_GTH }}" >> $GITHUB_ENV
+      - name: Print application properties
+        run: cat src/main/resources/application.properties
 
       - name: Install dependencies
         run: mvn clean install --no-transfer-progress --quiet
-
-      - name: Print environment variables
-        run: env
 
       - name: Print test reports
         run: ls -R target/surefire-reports
