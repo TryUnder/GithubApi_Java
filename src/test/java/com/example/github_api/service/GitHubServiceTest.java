@@ -2,6 +2,7 @@ package com.example.github_api.service;
 
 import com.example.github_api.exception.UserNotFoundException;
 import com.example.github_api.model.GitHubRepository;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -35,6 +36,11 @@ public class GitHubServiceTest {
 
     @Value("${github.api.token}")
     private String gitHubApiToken;
+
+    @BeforeAll
+    public static void setup() {
+        System.setProperty("github.api.token", "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");
+    }
 
     @BeforeEach
     void setUp() {
