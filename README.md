@@ -3,7 +3,7 @@
 This application provides an API to fetch GitHub repositories and branches information for a given user. </br>
 It was built using Spring Boot and Java 21. </br>
 You can easily track changes by following [Issues List](https://github.com/TryUnder/GithubApi_Java/issues) and [Project List](https://github.com/users/TryUnder/projects/2). </br>
-Project `GithubApi_Java` implements [CI Auto testing](https://github.com/TryUnder/GithubApi_Java/actions) as well by the use of github actions.
+Project `GithubApi_Java` implements [CI Auto testing](https://github.com/TryUnder/GithubApi_Java/actions) as well by the use of github actions. </br>
 Check [Technical Dockumentation](https://github.com/TryUnder/GithubApi_Java/wiki/Technician-Documentation) for more information.
 
 ## Prerequisites
